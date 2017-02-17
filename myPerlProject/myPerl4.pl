@@ -1,92 +1,107 @@
 #!/bin/env perl -w
-# U:\ucamusers\java\ucam\home\Workspace\myPerl1 data.txt 442x011-b-703_out
 # http://www.comp.leeds.ac.uk/Perl/sandtr.html
 # http://www.comp.leeds.ac.uk/Perl/matching.html
 
-# u:/ucamusers/java/ucam/home/Workspace/myPerl1/data.txt
+sub prepareString {
+	my ($args)       = @_;
+	my $myString     = $args->{baseString};
+	my $myNewOffsetX = $args->{offsetx};
+	my $myNewOffsetY = $args->{offsety};
 
-sub convert {
+	my $mySubString1 = substr( $myString, 1, 3 ) + $myNewOffsetX;
+	if ( $mySubString1 < 100 ) {
+		$mySubString1 = sprintf( "%03d", $mySubString1 );    # add leading 0
+	}
 
-	my ($args) = @_;
+	my $mySubString2 = substr( $myString, 5, 5 ) + $myNewOffsetY;
+	if ( $mySubString2 < 100 ) {
+		$mySubString2 = sprintf( "%03d", $mySubString2 );
+	}
 
-	#print( $args->{filename} );
+	$myString = "X" . $mySubString1 . ".000Y" . $mySubString2 . ".000\n";
+	return $myString;
+}
 
-	my $myCounter  = 0;
-	my $myPrevious = 0;
-	my $found1     = 0, my $found2 = 0, my $found3 = 0;
-	my $offset;
+sub convert3 {
+
+	my ($args)       = @_;
+	my $myText       = $args->{textbox};
+	my $myFilename   = $args->{filename};
+	my $myNewOffsetX = $args->{offsetx};
+	my $myNewOffsetY = $args->{offsety};
+
+	open $myINPUTFILE, "$myFilename";
+	@data = <$myINPUTFILE>;
+	close $myINPUTFILE;
+
+	$num_byte_read = $#data;
 	my $success = 0;
+	for ( my $i = 0 ; $i <= $num_byte_read ; $i++ ) {
+		if (
+			(
+				   ( $data[$i] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 1 ] =~ /^T\d\d\n$/ )
+			)
+			|| (
+				   ( $data[$i] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 1 ] =~ /^M09\n$/ )     # M09 between lines
+				&& ( $data[ $i + 2 ] =~ /^T\d\d\n$/ )
+			)
 
-	my $myNewOffsetX = 20;
-	my $myNewOffsetY = 30;
-	my $myValue;
-
-	#	open( my $myINPUTFILE, "<", $args->{filename} ) || die $!;
-	open( my $myINPUTFILE, "<", $args->{filename} ) || return 0;
-
-	# usun rozszerzenie pliku
-	my $myFilename = substr( $args->{filename}, -3 ) = "";
-	open( my $myOUTPUTFILE, ">", $myFilename . 'out' ) || return 0; # .txt -> .out
-
-	#Read the input file line by line
-	while ( my $line = <$myINPUTFILE> ) {
-		$myCounter++;
-
-		 print( $found1, " : ", $found2, " : ", $found3, "\n" );
-
-		if ( ( $line =~ /^M08\n$/ ) && ( $found1 != 1 ) ) {
-			$myPrevious = $myCounter;
-			$found1     = 1;
-			$offset     = tell($myINPUTFILE);
-			print $myOUTPUTFILE $line;
-		}
-		elsif (( $line =~ /^X\d\d\dY\d\d\d\n$/ )
-			&& ( $myCounter == $myPrevious + 1 )
-			&& ( $found2 != 1 ) )
+			# lets add here more conditions...
+			|| (   ( $data[$i] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 1 ] =~ /^M30\n$/ ) )
+			|| (   ( $data[$i] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 1 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 2 ] =~ /^T\d\d\n$/ ) )
+			|| (   ( $data[$i] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 1 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 2 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 3 ] =~ /^T\d\d\n$/ ) )
+			|| (   ( $data[$i] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 1 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 2 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 3 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 4 ] =~ /^T\d\d\n$/ ) )
+			|| (   ( $data[$i] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 1 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 2 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 3 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 4 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 5 ] =~ /^T\d\d\n$/ ) )
+			|| (   ( $data[$i] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 1 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 2 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 3 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 4 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 5 ] =~ /^X\d\d\dY\d\d\d\n$/ )
+				&& ( $data[ $i + 6 ] =~ /^T\d\d\n$/ ) )
+		  )
 		{
-			$myPrevious = $myCounter;
-			if ( $found1 == 1 ) {
-				$found2 = 1;    # ustaw gdy poprzedni zaliczony
-			}
-			$myValue      = $line;
-			$mySubString1 = substr( $myValue, 1, 3 ) + $myNewOffsetX;
-			$mySubString2 = substr( $myValue, 5, 3 ) + $myNewOffsetY;
-			$myValue      = "X" . $mySubString1 . "Y" . $mySubString2 . "\n";
-			print $myOUTPUTFILE $line;
-		}
-		elsif (( $line =~ /^T\d\d\n$/ )
-			|| ( $line =~ /^T\d\n$/ )
-			&& ( $myCounter == $myPrevious + 1 )
-			&& ( $found3 != 1 ) )
-		{
-			$myPrevious = $myCounter;
-			if ( ( $found2 == 1 ) && ( $found1 == 1 ) ) {
-				$found3 = 1;    # ustaw gdy oba poprzednie zaliczone
-			}
-			seek( $myOUTPUTFILE, $offset, 0 ) || return 0;
-			print $myOUTPUTFILE $myValue;
-			print $myOUTPUTFILE $line;
-
-			$found1 = 0;
-			$found2 = 0;
-			$found3 = 0;
-
+			$myResult = prepareString(
+				{
+					baseString => $data[$i],
+					offsetx    => $myNewOffsetX,
+					offsety    => $myNewOffsetY
+				}
+			);
+			$data[$i] = $myResult;
 			$success++;
-		}
-		else {
-			print $myOUTPUTFILE $line;
 		}
 	}
 
-	close $myINPUTFILE;
+	# remove the extension in file name
+	$myFilename = substr( $myFilename, 0, -3 );
+	open( my $myOUTPUTFILE, ">", $myFilename . 'out' )
+	  || return 0;    # .txt -> .out
+
+	print $myOUTPUTFILE @data;
 	close $myOUTPUTFILE;
 
 	if ( $success != 0 ) {
-		print("changes: $success. \n");
 		return $success;
 	}
 	else {
-		print("no changes. \n");
 		return 0;
 	}
 }
