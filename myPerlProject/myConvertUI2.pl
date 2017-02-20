@@ -183,9 +183,13 @@ sub myConvert {
 			$text->insert( 'end', "done. no changes made. \n", 'blue' );
 		}
 		elsif ( $rs == -1 ) {
-			$text->insert( 'end', "error. something went wrong.. \n", 'red' );
+			$text->insert( 'end', "error: something went wrong.. \n", 'red' );
 		}
-		elsif ( $rs > 0 ) {
+		elsif ( $rs == -2 ) {
+			$text->insert( 'end', "error: cannot open file $my_Path. \n",
+				'red' );
+		}
+		else {
 			$text->insert( 'end', "done. $rs changes. \n", 'blue' );
 		}
 	}

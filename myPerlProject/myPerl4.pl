@@ -30,7 +30,7 @@ sub convert3 {
 	my $myNewOffsetX = $args->{offsetx};
 	my $myNewOffsetY = $args->{offsety};
 
-	open ($myINPUTFILE, "$myFilename") or return -1;
+	open ($myINPUTFILE, "$myFilename") or return -2;
 	@data = <$myINPUTFILE>;
 	close $myINPUTFILE;
 
