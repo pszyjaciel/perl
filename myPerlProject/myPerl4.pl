@@ -30,7 +30,7 @@ sub convert3 {
 	my $myNewOffsetX = $args->{offsetx};
 	my $myNewOffsetY = $args->{offsety};
 
-	open $myINPUTFILE, "$myFilename";
+	open ($myINPUTFILE, "$myFilename") or return -1;
 	@data = <$myINPUTFILE>;
 	close $myINPUTFILE;
 
@@ -93,7 +93,7 @@ sub convert3 {
 	# remove the extension in file name
 	$myFilename = substr( $myFilename, 0, -3 );
 	open( my $myOUTPUTFILE, ">", $myFilename . 'out' )
-	  || return 0;    # .txt -> .out
+	  || return -1;    # .txt -> .out
 
 	print $myOUTPUTFILE @data;
 	close $myOUTPUTFILE;
