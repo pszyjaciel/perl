@@ -135,9 +135,20 @@ sub fileDialog {
 	}
 }
 
+sub isInRange {
+	my $myValue = shift;
+	if ( ( $myValue > 0 ) && ( $myValue < 1000 ) ) {
+		print("myValue: $myValue \n");
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
 sub isDigit {
 	my $myValue = shift;
-	if ( $myValue =~ /^[0-9,.E]+$/ ) {
+	if ( ( $myValue =~ /^[0-9,.E]+$/ ) ) {
 		return 1;
 	}
 	else {
@@ -168,6 +179,13 @@ sub myConvert {
 		$text->insert( 'end', "offset-x/offset-y is not a digit.\n", 'red' );
 		return 0;
 	}
+	elsif (( isInRange($my_OffsetX) != 1 )
+		|| ( isInRange($my_OffsetY) != 1 ) )
+	{
+		$text->insert( 'end', "offset-x/offset-y is out of range.\n", 'red' );
+		return 0;
+	}
+	
 	else {
 
 		$rs = convert3(
