@@ -137,7 +137,7 @@ sub fileDialog {
 
 sub isInRange {
 	my $myValue = shift;
-	if ( ( $myValue > 0 ) && ( $myValue < 1000 ) ) {
+	if ( ( $myValue >= 0 ) && ( $myValue < 1000 ) ) {
 		return 1;
 	}
 	else {
