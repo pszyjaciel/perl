@@ -138,7 +138,6 @@ sub fileDialog {
 sub isInRange {
 	my $myValue = shift;
 	if ( ( $myValue > 0 ) && ( $myValue < 1000 ) ) {
-		print("myValue: $myValue \n");
 		return 1;
 	}
 	else {
@@ -165,7 +164,7 @@ sub myConvert {
 	$text->delete( "0.0", 'end' );    # erase the text area
 
 	# https://perlmaven.com/check-if-string-is-empty-or-has-only-spaces-in-perl
-	if ( !defined $my_Path ) {
+	if ( !defined $my_Path || $my_Path eq '') {		# troche kucha
 		$text->insert( 'end', "path cannot be empty.\n", 'red' );
 		return 0;
 	}
